@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Login</title>
-<style>
-body{
-    background:#0f172a;
-    color:white;
-    text-align:center;
-    font-family:Arial;
-}
-.box{margin-top:100px;}
-input{padding:10px;margin:10px;width:220px;}
-button{padding:10px;background:#22c55e;border:none;color:white;}
-</style>
+    <title>Login</title>
+    <style>
+        body{
+            background:#0f172a;
+            color:white;
+            text-align:center;
+            font-family:Arial;
+        }
+        input{
+            padding:10px;
+            margin:10px;
+            width:250px;
+        }
+        button{
+            padding:10px 20px;
+            background:green;
+            color:white;
+            border:none;
+        }
+    </style>
 </head>
 <body>
 
-<div class="box">
-    <img src="/static/logo.png" width="120">
-    <h2>BASE DE DATOS EXPEDIENTES SMI-LE</h2>
+<img src="/static/logo.png" width="120"><br><br>
 
-    <form action="/login" method="POST">
-        <input name="usuario" placeholder="Usuario"><br>
-        <input name="clave" type="password" placeholder="Contraseña"><br>
-        <button>Ingresar</button>
-    </form>
-</div>
+<h2>BASE DE DATOS EXPEDIENTES SMI-LE</h2>
+
+<form action="/login" method="POST">
+    <input type="text" name="usuario" placeholder="Usuario" required><br>
+    <input type="password" name="clave" placeholder="Contraseña" required><br>
+    <button>Ingresar</button>
+</form>
+
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
 
 </body>
 </html>

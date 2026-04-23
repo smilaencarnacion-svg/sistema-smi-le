@@ -4,118 +4,83 @@
 <title>SMI-LE</title>
 
 <style>
-body{font-family:Arial;background:#f4f6fb;}
+body{font-family:Arial;background:#f1f5f9;}
 table{width:100%;border-collapse:collapse;}
-th{background:#1d4ed8;color:white;padding:8px;}
-td{border:1px solid #ccc;}
-input{width:100%;border:none;padding:5px;}
-button{padding:5px;border:none;cursor:pointer;}
-.save{background:green;color:white;}
-.delete{background:red;color:white;}
-.add{background:#2563eb;color:white;margin:10px;}
-.filtro input{background:#eef2ff;}
+th,td{border:1px solid #ccc;padding:5px;}
+th{background:#2563eb;color:white;}
+input{width:100%;}
+button{padding:5px;}
 </style>
 
-</head>
-<body>
-
-<h2>BASE DE DATOS EXPEDIENTES SMI-LE</h2>
-
-<button class="add" onclick="agregarFila()">+ Agregar</button>
-
-<form action="/importar" method="POST" enctype="multipart/form-data">
-<input type="file" name="archivo">
-<button>Importar Excel</button>
-</form>
-
-<table id="tabla">
-
-<tr>
-<th>ID</th>
-<th>Expediente</th>
-<th>Nombre</th>
-<th>Apellido</th>
-<th>Identidad</th>
-<th>Acción</th>
-</tr>
-
-<tr class="filtro">
-<td></td>
-<td><input onkeyup="filtrar(1)"></td>
-<td><input onkeyup="filtrar(2)"></td>
-<td><input onkeyup="filtrar(3)"></td>
-<td><input onkeyup="filtrar(4)"></td>
-<td></td>
-</tr>
-
-{% for d in datos %}
-<tr>
-<td>{{d[0]}}</td>
-<td><input value="{{d[1]}}"></td>
-<td><input value="{{d[2]}}"></td>
-<td><input value="{{d[4]}}"></td>
-<td><input value="{{d[6]}}"></td>
-
-<td>
-<button class="save" onclick="guardar(this, {{d[0]}})">Guardar</button>
-<a href="/eliminar/{{d[0]}}">
-<button class="delete">Eliminar</button>
-</a>
-</td>
-</tr>
-{% endfor %}
-
-</table>
-
 <script>
-function guardar(btn,id){
-    let fila = btn.parentNode.parentNode;
-    let inputs = fila.querySelectorAll("input");
-
-    fetch("/guardar",{
-        method:"POST",
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-            id:id,
-            expediente: inputs[0].value,
-            primer_nombre: inputs[1].value,
-            segundo_nombre:"",
-            primer_apellido: inputs[2].value,
-            segundo_apellido:"",
-            identidad: inputs[3].value,
-            fecha_nacimiento:"",
-            sexo:"",
-            departamento:"",
-            municipio:"",
-            aldea:""
-        })
-    }).then(()=>alert("Guardado"));
-}
-
-function agregarFila(){
-    let tabla = document.getElementById("tabla");
-    let fila = tabla.insertRow();
-
-    for(let i=0;i<5;i++){
-        let celda = fila.insertCell();
-        celda.innerHTML = "<input>";
-    }
-
-    let celdaAccion = fila.insertCell();
-    celdaAccion.innerHTML = `<button class="save" onclick="guardar(this,null)">Guardar</button>`;
-}
-
 function filtrar(col){
-    let input = document.querySelectorAll(".filtro input")[col-1].value.toLowerCase();
+    let input = document.querySelectorAll(".filtro")[col].value.toLowerCase();
     let filas = document.querySelectorAll("#tabla tr");
 
     filas.forEach((fila,i)=>{
-        if(i<2) return;
+        if(i<2)return;
         let texto = fila.cells[col].innerText.toLowerCase();
         fila.style.display = texto.includes(input) ? "" : "none";
     });
 }
 </script>
+
+</head>
+<body>
+
+<h2>BASE DE DATOS SMI-LE</h2>
+
+<!-- IMPORTAR -->
+<form action="/importar" method="POST" enctype="multipart/form-data">
+    <input type="file" name="archivo">
+    <button>Importar Excel</button>
+</form>
+
+<br>
+
+<table id="tabla">
+
+<tr>
+<th>Expediente</th>
+<th>Primer Nombre</th>
+<th>Segundo Nombre</th>
+<th>Primer Apellido</th>
+<th>Segundo Apellido</th>
+<th>Identidad</th>
+<th>Fecha</th>
+<th>Sexo</th>
+<th>Departamento</th>
+<th>Municipio</th>
+<th>Aldea</th>
+<th>Acción</th>
+</tr>
+
+<tr>
+{% for i in range(11) %}
+<td><input class="filtro" onkeyup="filtrar({{i}})"></td>
+{% endfor %}
+<td></td>
+</tr>
+
+<tr>
+<form action="/agregar" method="POST">
+{% for i in range(11) %}
+<td><input name="col{{i}}"></td>
+{% endfor %}
+<td><button>Agregar</button></td>
+</form>
+</tr>
+
+{% for fila in datos %}
+<tr>
+{% for dato in fila %}
+<td>{{dato}}</td>
+{% endfor %}
+<td><a href="/eliminar/{{loop.index0}}">Eliminar</a></td>
+</tr>
+{% endfor %}
+
+</table>
 
 </body>
 </html>
