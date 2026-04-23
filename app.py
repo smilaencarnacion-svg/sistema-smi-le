@@ -128,18 +128,18 @@ def eliminar_todo():
 # ---------------- IMPORTAR EXCEL (ARREGLADO) ----------------
 @app.route('/importar', methods=['POST'])
 def importar():
-    archivo = request.files.get('archivo')
+    if 'archivo' not in request.files:
+        return redirect('/panel')
 
-    if not archivo:
+    archivo = request.files['archivo']
+
+    if archivo.filename == '':
         return redirect('/panel')
 
     try:
         df = pd.read_excel(archivo, engine='openpyxl')
     except:
-        try:
-            df = pd.read_csv(archivo)
-        except:
-            return redirect('/panel')
+        return redirect('/panel')
 
     conn = conectar()
 

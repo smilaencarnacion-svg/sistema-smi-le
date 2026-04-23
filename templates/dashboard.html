@@ -5,14 +5,14 @@
 
 <style>
 body{font-family:Arial;background:#f1f5f9;}
-.header{display:flex;align-items:center;gap:15px;}
+.header{display:flex;align-items:center;gap:10px;}
 .header img{width:70px;}
-.btn{background:#2563eb;color:white;border:none;padding:6px;border-radius:4px;}
-.btn.danger{background:#dc2626;}
 table{width:100%;border-collapse:collapse;}
 th{background:#2563eb;color:white;}
 td{border:1px solid #ccc;padding:5px;}
 input{width:100%;}
+.btn{background:#2563eb;color:white;border:none;padding:6px;}
+.btn.danger{background:red;}
 </style>
 
 <script>
@@ -31,17 +31,6 @@ if(val && !texto.includes(val)) mostrar=false;
 fila.style.display=mostrar?"":"none";
 });
 }
-
-function editarFila(btn){
-let fila=btn.closest("tr");
-let inputs=fila.querySelectorAll("input");
-inputs.forEach(i=>i.removeAttribute("readonly"));
-btn.style.display="none";
-fila.querySelector(".guardar").style.display="inline";
-fila.querySelector(".cancelar").style.display="inline";
-}
-
-function cancelar(){location.reload();}
 </script>
 
 </head>
@@ -55,13 +44,16 @@ function cancelar(){location.reload();}
 
 <br>
 
+<!-- IMPORTAR (NO MUEVE LA TABLA) -->
 <form action="/importar" method="POST" enctype="multipart/form-data">
-<input type="file" name="archivo">
+<input type="file" name="archivo" required>
 <button class="btn">Importar Excel</button>
 </form>
 
 <a href="/exportar"><button class="btn">Descargar Excel</button></a>
 <a href="/eliminar_todo"><button class="btn danger">Eliminar Todo</button></a>
+
+<br><br>
 
 <table id="tabla">
 
@@ -97,9 +89,7 @@ function cancelar(){location.reload();}
 <td><input name="p1" value="{{fila[2]}}" readonly></td>
 
 <td>
-<button type="button" onclick="editarFila(this)">Editar</button>
-<button type="submit" class="guardar" style="display:none;">Guardar</button>
-<button type="button" class="cancelar" onclick="cancelar()" style="display:none;">Cancelar</button>
+<button type="submit">Guardar</button>
 
 <a href="/eliminar/{{fila[0]}}">
 <button type="button" class="btn danger">Eliminar</button>
