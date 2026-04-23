@@ -1,27 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
-    <style>
-        body{
-            background:#0f172a;
-            color:white;
-            text-align:center;
-            font-family:Arial;
-        }
-        input{
-            padding:10px;
-            margin:10px;
-            width:250px;
-        }
-        button{
-            padding:10px 20px;
-            background:green;
-            color:white;
-            border:none;
-        }
-    </style>
+<title>Login</title>
+<style>
+body{
+    background:#0f172a;
+    color:white;
+    text-align:center;
+    font-family:Arial;
+}
+input{
+    padding:10px;
+    margin:10px;
+    width:200px;
+}
+button{
+    background:#22c55e;
+    color:white;
+    padding:10px 20px;
+    border:none;
+}
+</style>
 </head>
+
 <body>
 
 <img src="/static/logo.png" width="120"><br><br>
@@ -29,14 +30,10 @@
 <h2>BASE DE DATOS EXPEDIENTES SMI-LE</h2>
 
 <form action="/login" method="POST">
-    <input type="text" name="usuario" placeholder="Usuario" required><br>
-    <input type="password" name="clave" placeholder="Contraseña" required><br>
-    <button>Ingresar</button>
+<input type="text" name="usuario" placeholder="Usuario"><br>
+<input type="password" name="clave" placeholder="Contraseña"><br>
+<button>Ingresar</button>
 </form>
-
-{% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
 
 </body>
 </html>

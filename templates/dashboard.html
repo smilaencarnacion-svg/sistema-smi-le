@@ -4,39 +4,101 @@
 <title>SMI-LE</title>
 
 <style>
-body{font-family:Arial;background:#f1f5f9;}
-table{width:100%;border-collapse:collapse;}
-th,td{border:1px solid #ccc;padding:5px;}
-th{background:#2563eb;color:white;}
-input{width:100%;}
-button{padding:5px;}
+
+body{
+    font-family:Arial;
+    background:#f1f5f9;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:10px;
+}
+
+.header img{
+    width:70px;
+}
+
+h2{
+    margin:0;
+}
+
+/* BOTONES */
+.btn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:6px 12px;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+.btn.danger{
+    background:#dc2626;
+}
+
+/* TABLA */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#2563eb;
+    color:white;
+    padding:8px;
+}
+
+td{
+    border:1px solid #ccc;
+    padding:5px;
+}
+
+input{
+    width:100%;
+}
+
 </style>
 
 <script>
-function filtrar(col){
-    let input = document.querySelectorAll(".filtro")[col].value.toLowerCase();
+function filtrar(){
+    let inputs = document.querySelectorAll(".filtro");
     let filas = document.querySelectorAll("#tabla tr");
 
-    filas.forEach((fila,i)=>{
-        if(i<2)return;
-        let texto = fila.cells[col].innerText.toLowerCase();
-        fila.style.display = texto.includes(input) ? "" : "none";
+    filas.forEach((fila, i)=>{
+        if(i<3) return;
+
+        let mostrar = true;
+
+        inputs.forEach((input, index)=>{
+            let val = input.value.toLowerCase();
+            let texto = fila.cells[index].innerText.toLowerCase();
+
+            if(val && !texto.includes(val)){
+                mostrar = false;
+            }
+        });
+
+        fila.style.display = mostrar ? "" : "none";
     });
 }
 </script>
 
 </head>
+
 <body>
 
-<h2>BASE DE DATOS SMI-LE</h2>
+<div class="header">
+    <img src="/static/logo.png">
+    <h2>BASE DE DATOS SMI-LE</h2>
+</div>
 
-<!-- IMPORTAR -->
-<form action="/importar" method="POST" enctype="multipart/form-data">
-    <input type="file" name="archivo">
-    <button>Importar Excel</button>
-</form>
-
-<br>
+<a href="/eliminar_todo">
+<button class="btn danger">Eliminar Todo</button>
+</a>
 
 <table id="tabla">
 
@@ -56,27 +118,47 @@ function filtrar(col){
 </tr>
 
 <tr>
-{% for i in range(11) %}
-<td><input class="filtro" onkeyup="filtrar({{i}})"></td>
-{% endfor %}
+<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()"></td>
 <td></td>
 </tr>
 
-<tr>
 <form action="/agregar" method="POST">
-{% for i in range(11) %}
-<td><input name="col{{i}}"></td>
-{% endfor %}
-<td><button>Agregar</button></td>
-</form>
+<tr>
+<td><input name="expediente"></td>
+<td><input name="p1"></td>
+<td><input name="p2"></td>
+<td><input name="a1"></td>
+<td><input name="a2"></td>
+<td><input name="identidad"></td>
+<td><input name="fecha"></td>
+<td><input name="sexo"></td>
+<td><input name="departamento"></td>
+<td><input name="municipio"></td>
+<td><input name="aldea"></td>
+<td><button class="btn">Agregar</button></td>
 </tr>
+</form>
 
-{% for fila in datos %}
+{% for fila in data %}
 <tr>
 {% for dato in fila %}
 <td>{{dato}}</td>
 {% endfor %}
-<td><a href="/eliminar/{{loop.index0}}">Eliminar</a></td>
+<td>
+<a href="/eliminar/{{loop.index0}}">
+<button class="btn danger">Eliminar</button>
+</a>
+</td>
 </tr>
 {% endfor %}
 

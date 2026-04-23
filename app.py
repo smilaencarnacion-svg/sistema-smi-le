@@ -1,57 +1,64 @@
 from flask import Flask, render_template, request, redirect, session
-import pandas as pd
-import os
 
 app = Flask(__name__)
 app.secret_key = "clave123"
 
+# almacenamiento temporal
 data = []
 
 # LOGIN
 @app.route('/')
-def inicio():
+def login():
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
-def login():
-    usuario = request.form.get('usuario')
-    clave = request.form.get('clave')
+def do_login():
+    usuario = request.form['usuario']
+    clave = request.form['clave']
 
-    if usuario == "admin" and clave == "123":
+    if usuario == "SMI-LE" and clave == "SMI-LE26":
         session['user'] = usuario
         return redirect('/panel')
     else:
-        return render_template('login.html', error="Credenciales incorrectas")
+        return "Credenciales incorrectas"
 
 # PANEL
 @app.route('/panel')
 def panel():
     if 'user' not in session:
         return redirect('/')
-    return render_template('dashboard.html', datos=data)
+    return render_template('dashboard.html', data=data)
 
 # AGREGAR
 @app.route('/agregar', methods=['POST'])
 def agregar():
-    fila = list(request.form.values())
+    fila = [
+        request.form['expediente'],
+        request.form['p1'],
+        request.form['p2'],
+        request.form['a1'],
+        request.form['a2'],
+        request.form['identidad'],
+        request.form['fecha'],
+        request.form['sexo'],
+        request.form['departamento'],
+        request.form['municipio'],
+        request.form['aldea']
+    ]
     data.append(fila)
     return redirect('/panel')
 
-# ELIMINAR
-@app.route('/eliminar/<int:index>')
-def eliminar(index):
-    if 0 <= index < len(data):
-        data.pop(index)
+# ELIMINAR UNO
+@app.route('/eliminar/<int:id>')
+def eliminar(id):
+    if 0 <= id < len(data):
+        data.pop(id)
     return redirect('/panel')
 
-# IMPORTAR EXCEL
-@app.route('/importar', methods=['POST'])
-def importar():
-    file = request.files['archivo']
-    if file:
-        df = pd.read_excel(file)
-        for _, row in df.iterrows():
-            data.append(list(row))
+# ELIMINAR TODO
+@app.route('/eliminar_todo')
+def eliminar_todo():
+    data.clear()
     return redirect('/panel')
 
 if __name__ == '__main__':
