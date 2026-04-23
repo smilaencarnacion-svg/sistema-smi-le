@@ -4,32 +4,101 @@
 <title>SMI-LE</title>
 
 <style>
-body{font-family:Arial;background:#f1f5f9;}
-.header{display:flex;align-items:center;gap:10px;}
-.header img{width:70px;}
-table{width:100%;border-collapse:collapse;}
-th{background:#2563eb;color:white;}
-td{border:1px solid #ccc;padding:5px;}
-input{width:100%;}
-.btn{background:#2563eb;color:white;border:none;padding:6px;}
-.btn.danger{background:red;}
+body {
+    font-family: Arial;
+    background: #f3f4f6;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header img {
+    width: 80px;
+}
+
+h1 {
+    color: #0f172a;
+}
+
+.top-bar {
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.import {
+    background: #3b82f6;
+    color: white;
+}
+
+.delete-all {
+    background: #dc2626;
+    color: white;
+}
+
+.add {
+    background: #16a34a;
+    color: white;
+}
+
+.delete {
+    background: #dc2626;
+    color: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #2563eb;
+    color: white;
+    padding: 10px;
+}
+
+td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+}
 </style>
 
 <script>
-function filtrar(){
-let inputs=document.querySelectorAll(".filtro");
-let filas=document.querySelectorAll("#tabla tr");
+function filtrar() {
+    let inputs = document.querySelectorAll(".filtro");
+    let filas = document.querySelectorAll("#tabla tbody tr");
 
-filas.forEach((fila,i)=>{
-if(i<3)return;
-let mostrar=true;
-inputs.forEach((input,index)=>{
-let val=input.value.toLowerCase();
-let texto=fila.cells[index].innerText.toLowerCase();
-if(val && !texto.includes(val)) mostrar=false;
-});
-fila.style.display=mostrar?"":"none";
-});
+    filas.forEach(fila => {
+        let mostrar = true;
+
+        inputs.forEach((input, i) => {
+            let valor = input.value.toLowerCase();
+            let texto = fila.cells[i].innerText.toLowerCase();
+
+            if (valor && !texto.includes(valor)) {
+                mostrar = false;
+            }
+        });
+
+        fila.style.display = mostrar ? "" : "none";
+    });
 }
 </script>
 
@@ -38,68 +107,103 @@ fila.style.display=mostrar?"":"none";
 <body>
 
 <div class="header">
-<img src="/static/logo.png">
-<h2>BASE DE DATOS SMI-LE</h2>
+    <img src="/static/logo.png">
+    <h1>BASE DE DATOS SMI-LE</h1>
 </div>
 
-<br>
+<!-- 🔥 IMPORTAR (SIN ROMPER DISEÑO) -->
+<div class="top-bar">
+    <form action="/importar" method="POST" enctype="multipart/form-data" style="display:inline;">
+        <input type="file" name="archivo" required>
+        <button class="import">Importar Excel</button>
+    </form>
 
-<!-- IMPORTAR (NO MUEVE LA TABLA) -->
-<form action="/importar" method="POST" enctype="multipart/form-data">
-<input type="file" name="archivo" required>
-<button class="btn">Importar Excel</button>
-</form>
+    <a href="/exportar">
+        <button class="import">Descargar Excel</button>
+    </a>
 
-<a href="/exportar"><button class="btn">Descargar Excel</button></a>
-<a href="/eliminar_todo"><button class="btn danger">Eliminar Todo</button></a>
-
-<br><br>
+    <a href="/eliminar_todo">
+        <button class="delete-all">Eliminar Todo</button>
+    </a>
+</div>
 
 <table id="tabla">
 
+<thead>
 <tr>
-<th>ID</th>
 <th>Expediente</th>
-<th>Nombre</th>
+<th>Primer Nombre</th>
+<th>Segundo Nombre</th>
+<th>Primer Apellido</th>
+<th>Segundo Apellido</th>
+<th>Identidad</th>
+<th>Fecha</th>
+<th>Sexo</th>
+<th>Departamento</th>
+<th>Municipio</th>
+<th>Aldea</th>
 <th>Acción</th>
 </tr>
 
 <tr>
-<td></td>
-<td><input class="filtro" onkeyup="filtrar()"></td>
-<td><input class="filtro" onkeyup="filtrar()"></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
+<td><input class="filtro" onkeyup="filtrar()" placeholder="Buscar..."></td>
 <td></td>
 </tr>
+</thead>
 
+<tbody>
+
+<!-- AGREGAR -->
 <form action="/agregar" method="POST">
 <tr>
-<td></td>
 <td><input name="expediente"></td>
 <td><input name="p1"></td>
-<td><button class="btn">Agregar</button></td>
+<td><input name="p2"></td>
+<td><input name="a1"></td>
+<td><input name="a2"></td>
+<td><input name="identidad"></td>
+<td><input name="fecha"></td>
+<td><input name="sexo"></td>
+<td><input name="departamento"></td>
+<td><input name="municipio"></td>
+<td><input name="aldea"></td>
+<td><button class="add">Agregar</button></td>
 </tr>
 </form>
 
+<!-- DATOS -->
 {% for fila in data %}
 <tr>
-<form action="/editar/{{fila[0]}}" method="POST">
-
-<td>{{fila[0]}}</td>
-<td><input name="expediente" value="{{fila[1]}}" readonly></td>
-<td><input name="p1" value="{{fila[2]}}" readonly></td>
-
+<td>{{fila[1]}}</td>
+<td>{{fila[2]}}</td>
+<td>{{fila[3]}}</td>
+<td>{{fila[4]}}</td>
+<td>{{fila[5]}}</td>
+<td>{{fila[6]}}</td>
+<td>{{fila[7]}}</td>
+<td>{{fila[8]}}</td>
+<td>{{fila[9]}}</td>
+<td>{{fila[10]}}</td>
+<td>{{fila[11]}}</td>
 <td>
-<button type="submit">Guardar</button>
-
 <a href="/eliminar/{{fila[0]}}">
-<button type="button" class="btn danger">Eliminar</button>
+<button class="delete">Eliminar</button>
 </a>
 </td>
-
-</form>
 </tr>
 {% endfor %}
 
+</tbody>
 </table>
 
 </body>
