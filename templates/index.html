@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sistema</title>
+</head>
+<body>
+
+<h2>Expedientes</h2>
+
+<form action="/agregar" method="POST">
+<input name="expediente" placeholder="Expediente">
+<input name="primer_nombre" placeholder="Nombre">
+<input name="primer_apellido" placeholder="Apellido">
+<input name="identidad" placeholder="Identidad">
+<button type="submit">Guardar</button>
+</form>
+
+<hr>
+
+<table border="1">
+<tr>
+<th>ID</th>
+<th>Nombre</th>
+<th>Apellido</th>
+<th>Identidad</th>
+</tr>
+
+{% for fila in datos %}
+<tr>
+<td>{{ fila[0] }}</td>
+<td>{{ fila[2] }}</td>
+<td>{{ fila[4] }}</td>
+<td>{{ fila[6] }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<a href="/borrar_todo">Borrar todo</a>
+
+</body>
+</html>
