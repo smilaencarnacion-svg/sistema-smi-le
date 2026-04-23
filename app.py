@@ -81,32 +81,6 @@ def agregar():
     conn.close()
     return redirect('/panel')
 
-# ---------------- EDITAR ----------------
-@app.route('/editar/<int:id>', methods=['POST'])
-def editar(id):
-    conn = conectar()
-    conn.execute("""
-    UPDATE pacientes SET 
-    expediente=?,p1=?,p2=?,a1=?,a2=?,identidad=?,fecha=?,sexo=?,departamento=?,municipio=?,aldea=?
-    WHERE id=?
-    """, (
-        request.form.get('expediente',''),
-        request.form.get('p1',''),
-        request.form.get('p2',''),
-        request.form.get('a1',''),
-        request.form.get('a2',''),
-        request.form.get('identidad',''),
-        request.form.get('fecha',''),
-        request.form.get('sexo',''),
-        request.form.get('departamento',''),
-        request.form.get('municipio',''),
-        request.form.get('aldea',''),
-        id
-    ))
-    conn.commit()
-    conn.close()
-    return redirect('/panel')
-
 # ---------------- ELIMINAR ----------------
 @app.route('/eliminar/<int:id>')
 def eliminar(id):
@@ -125,44 +99,52 @@ def eliminar_todo():
     conn.close()
     return redirect('/panel')
 
-# ---------------- IMPORTAR EXCEL (ARREGLADO) ----------------
+# ---------------- IMPORTAR EXCEL (SOLUCIÓN REAL) ----------------
 @app.route('/importar', methods=['POST'])
 def importar():
-    if 'archivo' not in request.files:
-        return redirect('/panel')
+    archivo = request.files.get('archivo')
 
-    archivo = request.files['archivo']
-
-    if archivo.filename == '':
+    if not archivo or archivo.filename == "":
+        print("❌ No se seleccionó archivo")
         return redirect('/panel')
 
     try:
-        df = pd.read_excel(archivo, engine='openpyxl')
-    except:
+        # Lee TODO como texto para evitar errores
+        df = pd.read_excel(archivo, engine='openpyxl', dtype=str)
+    except Exception as e:
+        print("❌ Error leyendo Excel:", e)
         return redirect('/panel')
 
     conn = conectar()
 
     for _, row in df.iterrows():
         try:
-            fila = []
-            for i in range(11):
-                valor = row[i] if i < len(row) else ""
-                if pd.isna(valor):
-                    valor = ""
-                fila.append(str(valor))
+            # Convierte fila completa a lista segura
+            datos = list(row.values)
+
+            # Asegura 11 columnas exactas
+            while len(datos) < 11:
+                datos.append("")
+
+            datos = datos[:11]
+
+            # Limpia valores nulos
+            datos = [("" if str(x) == "nan" else str(x)) for x in datos]
 
             conn.execute("""
             INSERT INTO pacientes 
             (expediente,p1,p2,a1,a2,identidad,fecha,sexo,departamento,municipio,aldea)
             VALUES (?,?,?,?,?,?,?,?,?,?,?)
-            """, tuple(fila))
-        except:
+            """, tuple(datos))
+
+        except Exception as e:
+            print("⚠️ Fila ignorada:", e)
             continue
 
     conn.commit()
     conn.close()
 
+    print("✅ Excel importado correctamente")
     return redirect('/panel')
 
 # ---------------- EXPORTAR EXCEL ----------------
