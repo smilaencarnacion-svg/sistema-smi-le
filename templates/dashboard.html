@@ -4,29 +4,21 @@
 <title>SMI-LE</title>
 
 <style>
-
 body{
     font-family:Arial;
     background:#f1f5f9;
 }
 
-/* HEADER */
 .header{
     display:flex;
     align-items:center;
     gap:15px;
-    margin-bottom:10px;
 }
 
 .header img{
     width:70px;
 }
 
-h2{
-    margin:0;
-}
-
-/* BOTONES */
 .btn{
     background:#2563eb;
     color:white;
@@ -40,7 +32,6 @@ h2{
     background:#dc2626;
 }
 
-/* TABLA */
 table{
     width:100%;
     border-collapse:collapse;
@@ -60,7 +51,6 @@ td{
 input{
     width:100%;
 }
-
 </style>
 
 <script>
@@ -85,6 +75,21 @@ function filtrar(){
         fila.style.display = mostrar ? "" : "none";
     });
 }
+
+function editarFila(btn){
+    let fila = btn.closest("tr");
+    let inputs = fila.querySelectorAll("input");
+
+    inputs.forEach(i => i.removeAttribute("readonly"));
+
+    btn.style.display = "none";
+    fila.querySelector(".guardar").style.display = "inline";
+    fila.querySelector(".cancelar").style.display = "inline";
+}
+
+function cancelar(){
+    location.reload();
+}
 </script>
 
 </head>
@@ -96,9 +101,22 @@ function filtrar(){
     <h2>BASE DE DATOS SMI-LE</h2>
 </div>
 
-<a href="/eliminar_todo">
-<button class="btn danger">Eliminar Todo</button>
+<br>
+
+<div style="display:flex; gap:10px;">
+
+<form action="/importar" method="POST" enctype="multipart/form-data">
+    <input type="file" name="archivo">
+    <button class="btn">Importar Excel</button>
+</form>
+
+<a href="/eliminar_todo" onclick="return confirm('¿Eliminar todo?')">
+    <button class="btn danger">Eliminar Todo</button>
 </a>
+
+</div>
+
+<br>
 
 <table id="tabla">
 
@@ -151,14 +169,31 @@ function filtrar(){
 
 {% for fila in data %}
 <tr>
-{% for dato in fila %}
-<td>{{dato}}</td>
-{% endfor %}
+<form action="/editar/{{loop.index0}}" method="POST">
+
+<td><input name="expediente" value="{{fila[0]}}" readonly></td>
+<td><input name="p1" value="{{fila[1]}}" readonly></td>
+<td><input name="p2" value="{{fila[2]}}" readonly></td>
+<td><input name="a1" value="{{fila[3]}}" readonly></td>
+<td><input name="a2" value="{{fila[4]}}" readonly></td>
+<td><input name="identidad" value="{{fila[5]}}" readonly></td>
+<td><input name="fecha" value="{{fila[6]}}" readonly></td>
+<td><input name="sexo" value="{{fila[7]}}" readonly></td>
+<td><input name="departamento" value="{{fila[8]}}" readonly></td>
+<td><input name="municipio" value="{{fila[9]}}" readonly></td>
+<td><input name="aldea" value="{{fila[10]}}" readonly></td>
+
 <td>
+<button type="button" onclick="editarFila(this)">Editar</button>
+<button type="submit" class="guardar" style="display:none;">Guardar</button>
+<button type="button" class="cancelar" onclick="cancelar()" style="display:none;">Cancelar</button>
+
 <a href="/eliminar/{{loop.index0}}">
-<button class="btn danger">Eliminar</button>
+<button type="button" class="btn danger">Eliminar</button>
 </a>
 </td>
+
+</form>
 </tr>
 {% endfor %}
 

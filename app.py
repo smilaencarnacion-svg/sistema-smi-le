@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect, session
+import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = "clave123"
 
-# almacenamiento temporal
 data = []
 
 # LOGIN
@@ -48,6 +48,25 @@ def agregar():
     data.append(fila)
     return redirect('/panel')
 
+# EDITAR
+@app.route('/editar/<int:id>', methods=['POST'])
+def editar(id):
+    if 0 <= id < len(data):
+        data[id] = [
+            request.form['expediente'],
+            request.form['p1'],
+            request.form['p2'],
+            request.form['a1'],
+            request.form['a2'],
+            request.form['identidad'],
+            request.form['fecha'],
+            request.form['sexo'],
+            request.form['departamento'],
+            request.form['municipio'],
+            request.form['aldea']
+        ]
+    return redirect('/panel')
+
 # ELIMINAR UNO
 @app.route('/eliminar/<int:id>')
 def eliminar(id):
@@ -59,6 +78,17 @@ def eliminar(id):
 @app.route('/eliminar_todo')
 def eliminar_todo():
     data.clear()
+    return redirect('/panel')
+
+# IMPORTAR EXCEL
+@app.route('/importar', methods=['POST'])
+def importar():
+    archivo = request.files['archivo']
+    df = pd.read_excel(archivo)
+
+    for _, row in df.iterrows():
+        data.append(list(row))
+
     return redirect('/panel')
 
 if __name__ == '__main__':
