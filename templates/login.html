@@ -20,6 +20,7 @@ button{
     padding:10px 20px;
     border:none;
 }
+.error{color:red;}
 </style>
 </head>
 
@@ -34,6 +35,10 @@ button{
 <input type="password" name="clave" placeholder="Contraseña"><br>
 <button>Ingresar</button>
 </form>
+
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
 
 </body>
 </html>

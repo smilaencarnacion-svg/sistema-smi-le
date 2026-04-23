@@ -4,92 +4,44 @@
 <title>SMI-LE</title>
 
 <style>
-body{
-    font-family:Arial;
-    background:#f1f5f9;
-}
-
-.header{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-.header img{
-    width:70px;
-}
-
-.btn{
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:6px 12px;
-    border-radius:4px;
-    cursor:pointer;
-}
-
-.btn.danger{
-    background:#dc2626;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th{
-    background:#2563eb;
-    color:white;
-    padding:8px;
-}
-
-td{
-    border:1px solid #ccc;
-    padding:5px;
-}
-
-input{
-    width:100%;
-}
+body{font-family:Arial;background:#f1f5f9;}
+.header{display:flex;align-items:center;gap:15px;}
+.header img{width:70px;}
+.btn{background:#2563eb;color:white;border:none;padding:6px;border-radius:4px;}
+.btn.danger{background:#dc2626;}
+table{width:100%;border-collapse:collapse;}
+th{background:#2563eb;color:white;}
+td{border:1px solid #ccc;padding:5px;}
+input{width:100%;}
 </style>
 
 <script>
 function filtrar(){
-    let inputs = document.querySelectorAll(".filtro");
-    let filas = document.querySelectorAll("#tabla tr");
+let inputs=document.querySelectorAll(".filtro");
+let filas=document.querySelectorAll("#tabla tr");
 
-    filas.forEach((fila, i)=>{
-        if(i<3) return;
-
-        let mostrar = true;
-
-        inputs.forEach((input, index)=>{
-            let val = input.value.toLowerCase();
-            let texto = fila.cells[index].innerText.toLowerCase();
-
-            if(val && !texto.includes(val)){
-                mostrar = false;
-            }
-        });
-
-        fila.style.display = mostrar ? "" : "none";
-    });
+filas.forEach((fila,i)=>{
+if(i<3)return;
+let mostrar=true;
+inputs.forEach((input,index)=>{
+let val=input.value.toLowerCase();
+let texto=fila.cells[index].innerText.toLowerCase();
+if(val && !texto.includes(val)) mostrar=false;
+});
+fila.style.display=mostrar?"":"none";
+});
 }
 
 function editarFila(btn){
-    let fila = btn.closest("tr");
-    let inputs = fila.querySelectorAll("input");
-
-    inputs.forEach(i => i.removeAttribute("readonly"));
-
-    btn.style.display = "none";
-    fila.querySelector(".guardar").style.display = "inline";
-    fila.querySelector(".cancelar").style.display = "inline";
+let fila=btn.closest("tr");
+let inputs=fila.querySelectorAll("input");
+inputs.forEach(i=>i.removeAttribute("readonly"));
+btn.style.display="none";
+fila.querySelector(".guardar").style.display="inline";
+fila.querySelector(".cancelar").style.display="inline";
 }
 
-function cancelar(){
-    location.reload();
-}
+function cancelar(){location.reload();}
 </script>
 
 </head>
@@ -97,54 +49,31 @@ function cancelar(){
 <body>
 
 <div class="header">
-    <img src="/static/logo.png">
-    <h2>BASE DE DATOS SMI-LE</h2>
+<img src="/static/logo.png">
+<h2>BASE DE DATOS SMI-LE</h2>
 </div>
 
 <br>
-
-<div style="display:flex; gap:10px;">
 
 <form action="/importar" method="POST" enctype="multipart/form-data">
-    <input type="file" name="archivo">
-    <button class="btn">Importar Excel</button>
+<input type="file" name="archivo">
+<button class="btn">Importar Excel</button>
 </form>
 
-<a href="/eliminar_todo" onclick="return confirm('¿Eliminar todo?')">
-    <button class="btn danger">Eliminar Todo</button>
-</a>
-
-</div>
-
-<br>
+<a href="/exportar"><button class="btn">Descargar Excel</button></a>
+<a href="/eliminar_todo"><button class="btn danger">Eliminar Todo</button></a>
 
 <table id="tabla">
 
 <tr>
+<th>ID</th>
 <th>Expediente</th>
-<th>Primer Nombre</th>
-<th>Segundo Nombre</th>
-<th>Primer Apellido</th>
-<th>Segundo Apellido</th>
-<th>Identidad</th>
-<th>Fecha</th>
-<th>Sexo</th>
-<th>Departamento</th>
-<th>Municipio</th>
-<th>Aldea</th>
+<th>Nombre</th>
 <th>Acción</th>
 </tr>
 
 <tr>
-<td><input class="filtro" onkeyup="filtrar()"></td>
-<td><input class="filtro" onkeyup="filtrar()"></td>
-<td><input class="filtro" onkeyup="filtrar()"></td>
-<td><input class="filtro" onkeyup="filtrar()"></td>
-<td><input class="filtro" onkeyup="filtrar()"></td>
-<td><input class="filtro" onkeyup="filtrar()"></td>
-<td><input class="filtro" onkeyup="filtrar()"></td>
-<td><input class="filtro" onkeyup="filtrar()"></td>
-<td><input class="filtro" onkeyup="filtrar()"></td>
+<td></td>
 <td><input class="filtro" onkeyup="filtrar()"></td>
 <td><input class="filtro" onkeyup="filtrar()"></td>
 <td></td>
@@ -152,43 +81,27 @@ function cancelar(){
 
 <form action="/agregar" method="POST">
 <tr>
+<td></td>
 <td><input name="expediente"></td>
 <td><input name="p1"></td>
-<td><input name="p2"></td>
-<td><input name="a1"></td>
-<td><input name="a2"></td>
-<td><input name="identidad"></td>
-<td><input name="fecha"></td>
-<td><input name="sexo"></td>
-<td><input name="departamento"></td>
-<td><input name="municipio"></td>
-<td><input name="aldea"></td>
 <td><button class="btn">Agregar</button></td>
 </tr>
 </form>
 
 {% for fila in data %}
 <tr>
-<form action="/editar/{{loop.index0}}" method="POST">
+<form action="/editar/{{fila[0]}}" method="POST">
 
-<td><input name="expediente" value="{{fila[0]}}" readonly></td>
-<td><input name="p1" value="{{fila[1]}}" readonly></td>
-<td><input name="p2" value="{{fila[2]}}" readonly></td>
-<td><input name="a1" value="{{fila[3]}}" readonly></td>
-<td><input name="a2" value="{{fila[4]}}" readonly></td>
-<td><input name="identidad" value="{{fila[5]}}" readonly></td>
-<td><input name="fecha" value="{{fila[6]}}" readonly></td>
-<td><input name="sexo" value="{{fila[7]}}" readonly></td>
-<td><input name="departamento" value="{{fila[8]}}" readonly></td>
-<td><input name="municipio" value="{{fila[9]}}" readonly></td>
-<td><input name="aldea" value="{{fila[10]}}" readonly></td>
+<td>{{fila[0]}}</td>
+<td><input name="expediente" value="{{fila[1]}}" readonly></td>
+<td><input name="p1" value="{{fila[2]}}" readonly></td>
 
 <td>
 <button type="button" onclick="editarFila(this)">Editar</button>
 <button type="submit" class="guardar" style="display:none;">Guardar</button>
 <button type="button" class="cancelar" onclick="cancelar()" style="display:none;">Cancelar</button>
 
-<a href="/eliminar/{{loop.index0}}">
+<a href="/eliminar/{{fila[0]}}">
 <button type="button" class="btn danger">Eliminar</button>
 </a>
 </td>
