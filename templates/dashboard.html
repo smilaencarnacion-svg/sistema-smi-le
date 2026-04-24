@@ -79,14 +79,24 @@ input {
     box-sizing: border-box;
 }
 
-/* 🔥 SOLO AJUSTES */
+/* 🔥 AJUSTES SOLO COLUMNAS NECESARIAS */
 th:nth-child(6), td:nth-child(6) {
-    width: 260px; /* Identidad más amplia (SOLUCIONADO) */
+    width: 260px;
     white-space: nowrap;
 }
 
 th:nth-child(7), td:nth-child(7) {
     width: 160px;
+}
+
+th:nth-child(10), td:nth-child(10) {
+    width: 200px; /* Municipio */
+    white-space: nowrap;
+}
+
+th:nth-child(11), td:nth-child(11) {
+    width: 200px; /* Aldea */
+    white-space: nowrap;
 }
 </style>
 
@@ -200,9 +210,9 @@ function filtrar() {
 <td>{{fila[5]}}</td>
 <td>{{fila[6]}}</td>
 <td>
-    {% if fila[7] %}
-        {{ fila[7].split(" ")[0].split("-")[2] }}/{{ fila[7].split(" ")[0].split("-")[1] }}/{{ fila[7].split(" ")[0].split("-")[0] }}
-    {% endif %}
+{% if fila[7] %}
+{{ fila[7].split(" ")[0].split("-")[2] }}/{{ fila[7].split(" ")[0].split("-")[1] }}/{{ fila[7].split(" ")[0].split("-")[0] }}
+{% endif %}
 </td>
 <td>{{fila[8]}}</td>
 <td>{{fila[9]}}</td>
