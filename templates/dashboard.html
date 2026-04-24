@@ -79,13 +79,13 @@ input {
     box-sizing: border-box;
 }
 
-/* 🔥 AJUSTES SOLO ESTAS COLUMNAS */
+/* 🔥 SOLO AJUSTES */
 th:nth-child(6), td:nth-child(6) {
-    width: 180px;
+    width: 200px; /* Identidad más amplia */
 }
 
 th:nth-child(7), td:nth-child(7) {
-    width: 150px;
+    width: 140px; /* Fecha */
 }
 </style>
 
@@ -198,7 +198,7 @@ function filtrar() {
 <td>{{fila[4]}}</td>
 <td>{{fila[5]}}</td>
 <td>{{fila[6]}}</td>
-<td>{{fila[7]}}</td>
+<td>{{fila[7].split(" ")[0] if fila[7] else ""}}</td> <!-- 🔥 QUITA HORA -->
 <td>{{fila[8]}}</td>
 <td>{{fila[9]}}</td>
 <td>{{fila[10]}}</td>
