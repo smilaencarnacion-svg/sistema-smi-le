@@ -81,6 +81,7 @@ input {
 </style>
 
 <script>
+// FILTRO POR COLUMNAS
 function filtrar() {
     let inputs = document.querySelectorAll(".filtro");
     let filas = document.querySelectorAll("#tabla tbody tr");
@@ -111,11 +112,13 @@ function filtrar() {
     <h1>BASE DE DATOS SMI-LE</h1>
 </div>
 
-<!-- 🔥 IMPORTAR (SIN ROMPER DISEÑO) -->
+<!-- 🔥 BOTONES -->
 <div class="top-bar">
-    <form action="/importar" method="POST" enctype="multipart/form-data" style="display:inline;">
-        <input type="file" name="archivo" required>
-        <button class="import">Importar Excel</button>
+
+    <!-- IMPORTAR (FIX REAL) -->
+    <form id="formImportar" action="/importar" method="POST" enctype="multipart/form-data" style="display:inline;">
+        <input type="file" id="archivoInput" name="archivo" required>
+        <button type="submit" class="import">Importar Excel</button>
     </form>
 
     <a href="/exportar">
@@ -125,6 +128,7 @@ function filtrar() {
     <a href="/eliminar_todo">
         <button class="delete-all">Eliminar Todo</button>
     </a>
+
 </div>
 
 <table id="tabla">
@@ -205,6 +209,18 @@ function filtrar() {
 
 </tbody>
 </table>
+
+<!-- 🔥 SCRIPT IMPORTANTE -->
+<script>
+document.getElementById("formImportar").addEventListener("submit", function(e){
+    let archivo = document.getElementById("archivoInput").value;
+
+    if(!archivo){
+        e.preventDefault();
+        alert("Selecciona un archivo primero");
+    }
+});
+</script>
 
 </body>
 </html>

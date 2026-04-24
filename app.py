@@ -99,18 +99,22 @@ def eliminar_todo():
     conn.close()
     return redirect('/panel')
 
-# ---------------- IMPORTAR EXCEL (SOLUCIÓN REAL) ----------------
+# ---------------- IMPORTAR EXCEL (ARREGLADO REAL) ----------------
 @app.route('/importar', methods=['POST'])
 def importar():
     archivo = request.files.get('archivo')
 
-    if not archivo or archivo.filename == "":
-        print("❌ No se seleccionó archivo")
+    if archivo is None:
+        print("❌ No llegó archivo")
+        return redirect('/panel')
+
+    if archivo.filename == "":
+        print("❌ Archivo vacío")
         return redirect('/panel')
 
     try:
-        # Lee TODO como texto para evitar errores
         df = pd.read_excel(archivo, engine='openpyxl', dtype=str)
+        print("✅ Excel leído")
     except Exception as e:
         print("❌ Error leyendo Excel:", e)
         return redirect('/panel')
@@ -119,16 +123,12 @@ def importar():
 
     for _, row in df.iterrows():
         try:
-            # Convierte fila completa a lista segura
             datos = list(row.values)
 
-            # Asegura 11 columnas exactas
             while len(datos) < 11:
                 datos.append("")
 
             datos = datos[:11]
-
-            # Limpia valores nulos
             datos = [("" if str(x) == "nan" else str(x)) for x in datos]
 
             conn.execute("""
@@ -136,18 +136,16 @@ def importar():
             (expediente,p1,p2,a1,a2,identidad,fecha,sexo,departamento,municipio,aldea)
             VALUES (?,?,?,?,?,?,?,?,?,?,?)
             """, tuple(datos))
-
-        except Exception as e:
-            print("⚠️ Fila ignorada:", e)
+        except:
             continue
 
     conn.commit()
     conn.close()
 
-    print("✅ Excel importado correctamente")
+    print("✅ Importación completa")
     return redirect('/panel')
 
-# ---------------- EXPORTAR EXCEL ----------------
+# ---------------- EXPORTAR ----------------
 @app.route('/exportar')
 def exportar():
     conn = conectar()
