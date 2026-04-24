@@ -78,10 +78,18 @@ input {
     padding: 5px;
     box-sizing: border-box;
 }
+
+/* 🔥 AJUSTES SOLO ESTAS COLUMNAS */
+th:nth-child(6), td:nth-child(6) {
+    width: 180px;
+}
+
+th:nth-child(7), td:nth-child(7) {
+    width: 150px;
+}
 </style>
 
 <script>
-// FILTRO POR COLUMNAS
 function filtrar() {
     let inputs = document.querySelectorAll(".filtro");
     let filas = document.querySelectorAll("#tabla tbody tr");
@@ -112,22 +120,20 @@ function filtrar() {
     <h1>BASE DE DATOS SMI-LE</h1>
 </div>
 
-<!-- 🔥 BOTONES -->
 <div class="top-bar">
 
-    <!-- IMPORTAR (FIX REAL) -->
-    <form id="formImportar" action="/importar" method="POST" enctype="multipart/form-data" style="display:inline;">
-        <input type="file" id="archivoInput" name="archivo" required>
-        <button type="submit" class="import">Importar Excel</button>
-    </form>
+<form id="formImportar" action="/importar" method="POST" enctype="multipart/form-data" style="display:inline;">
+    <input type="file" id="archivoInput" name="archivo" required>
+    <button type="submit" class="import">Importar Excel</button>
+</form>
 
-    <a href="/exportar">
-        <button class="import">Descargar Excel</button>
-    </a>
+<a href="/exportar">
+    <button class="import">Descargar Excel</button>
+</a>
 
-    <a href="/eliminar_todo">
-        <button class="delete-all">Eliminar Todo</button>
-    </a>
+<a href="/eliminar_todo">
+    <button class="delete-all">Eliminar Todo</button>
+</a>
 
 </div>
 
@@ -141,7 +147,7 @@ function filtrar() {
 <th>Primer Apellido</th>
 <th>Segundo Apellido</th>
 <th>Identidad</th>
-<th>Fecha</th>
+<th>Fecha de Nacimiento</th>
 <th>Sexo</th>
 <th>Departamento</th>
 <th>Municipio</th>
@@ -167,7 +173,6 @@ function filtrar() {
 
 <tbody>
 
-<!-- AGREGAR -->
 <form action="/agregar" method="POST">
 <tr>
 <td><input name="expediente"></td>
@@ -185,7 +190,6 @@ function filtrar() {
 </tr>
 </form>
 
-<!-- DATOS -->
 {% for fila in data %}
 <tr>
 <td>{{fila[1]}}</td>
@@ -210,7 +214,6 @@ function filtrar() {
 </tbody>
 </table>
 
-<!-- 🔥 SCRIPT IMPORTANTE -->
 <script>
 document.getElementById("formImportar").addEventListener("submit", function(e){
     let archivo = document.getElementById("archivoInput").value;
